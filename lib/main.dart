@@ -31,12 +31,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var a = [];
 
-  Future<List> list = EventManager.instance.query();
-  List<dynamic> a = [];
   @override
   Widget build(BuildContext context) {
-
+    Future<List<Map<String, dynamic>>> table = EventManager.instance.query();
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
             leading: const CircleAvatar(
               child: Icon(Icons.flag),
             ),
-            title: Text('${a[i]}'),
+            title: Text('${a[i]['name']}'),
             onTap: () {},
           ),
         ),
@@ -58,16 +57,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
-              child: Text('新增'),
-              onPressed: () {
-                EventManager.instance.insert();
-              },
-            ),
-            RaisedButton(
+            FloatingActionButton(
               child: Text('查詢'),
               onPressed: () {
-                list.then((value) {
+                table.then((value) {
                   setState(() {
                     a = value;
                     print(a);
@@ -75,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
-            RaisedButton(
+            FloatingActionButton(
               child: Text('刪除'),
               onPressed: () {
                 EventManager.instance.delete();
@@ -87,6 +80,11 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           EventManager.instance.insert();
+          table.then((value) {
+            setState(() {
+              a = value;
+            });
+          });
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),

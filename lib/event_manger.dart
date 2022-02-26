@@ -17,7 +17,7 @@ class EventManager {
     print('------insert執行結束------');
   }
 
-  Future<List> query()async{
+  Future<List<Map<String, dynamic>>> query()async{
     final list = [];
     final rows = await dbHepler.queryAllRow();
     print('查詢結果');
@@ -25,7 +25,7 @@ class EventManager {
       list.add(i['name']);
     });
 
-    return list;
+    return rows;
   }
 
   void delete()async{
