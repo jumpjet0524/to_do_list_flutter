@@ -42,16 +42,24 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: ListView(
-        children: List.generate(
-          a.length,
-          (i) => ListTile(
-            leading: const CircleAvatar(
-              child: Icon(Icons.flag),
-            ),
-            title: Text('${a[i]['name']}'),
-            onTap: () {},
-          ),
-        ),
+        children: List.generate(a.length, (i) {
+          return Dismissible(
+            key: ValueKey<int>(a[i]['id']),
+            //key: UniqueKey(),
+            onDismissed: (direction) {
+              EventManager.instance.deletewho(a[i]['id']);
+            },
+            background: Container(color: Colors.yellow),
+              child:ListTile(
+                leading: const CircleAvatar(
+                  child: Icon(Icons.flag),
+                ),
+                title: Text('${a[i]['id']}'),
+                onTap: () {},
+              ),
+          );
+
+        }),
       ),
       drawer: Drawer(
         child: Column(

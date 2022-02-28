@@ -18,18 +18,16 @@ class EventManager {
   }
 
   Future<List<Map<String, dynamic>>> query()async{
-    final list = [];
     final rows = await dbHepler.queryAllRow();
-    print('查詢結果');
-    rows.forEach((i) {
-      list.add(i['name']);
-    });
-
     return rows;
   }
 
   void delete()async{
     final id = await dbHepler.queryRowCount();
+    dbHepler.delete(id!);
+    print('---delete 執行結束---');
+  }
+  Future deletewho(id)async{
     dbHepler.delete(id!);
     print('---delete 執行結束---');
   }
