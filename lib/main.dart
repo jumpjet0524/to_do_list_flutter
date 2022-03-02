@@ -36,30 +36,36 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     Future<List<Map<String, dynamic>>> table = EventManager.instance.query();
+    List<int> items = List<int>.generate(a.length, (int index) => index);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: ListView(
-        children: List.generate(a.length, (i) {
+      body: ListView.builder(
+        itemCount: items.length,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        itemBuilder: (BuildContext context, int index) {
           return Dismissible(
-            key: ValueKey<int>(a[i]['id']),
-            //key: UniqueKey(),
+            background: Container(
+              color: Colors.green,
+            ),
+            key: UniqueKey(),
             onDismissed: (direction) {
-              EventManager.instance.deletewho(a[i]['id']);
+              EventManager.instance.delete(a[index]['id']).then((val) {
+                setState(() {
+                  table.then((value) {
+                    setState(() {
+                      a = value;
+                      print(a);
+                    });
+                  });
+                });
+              });
             },
-            background: Container(color: Colors.yellow),
-              child:ListTile(
-                leading: const CircleAvatar(
-                  child: Icon(Icons.flag),
-                ),
-                title: Text('${a[i]['id']}'),
-                onTap: () {},
-              ),
+            child: ListTile(title: Text('${a[index]['name']}')),
           );
-
-        }),
+        },
       ),
       drawer: Drawer(
         child: Column(
@@ -76,23 +82,34 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
-            FloatingActionButton(
-              child: Text('刪除'),
-              onPressed: () {
-                EventManager.instance.delete();
-              },
-            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          EventManager.instance.insert();
-          table.then((value) {
-            setState(() {
-              a = value;
-            });
-          });
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('AlertDialog Title'),
+              content: const Text('AlertDialog description'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    EventManager.instance.insert().then((value) {
+                      table.then((value) {
+                        setState(() {
+                          a = value;
+                        });
+                      });
+                    });
+
+                    Navigator.pop(context, 'OK');
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),

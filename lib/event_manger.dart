@@ -8,7 +8,7 @@ class EventManager {
 
   static final EventManager instance = EventManager._privateConstructor();
 
-  void insert() async {
+  Future<void>  insert() async {
     var event = Event(
       name: '打神魔',
       event: '日常任務',
@@ -22,12 +22,7 @@ class EventManager {
     return rows;
   }
 
-  void delete()async{
-    final id = await dbHepler.queryRowCount();
-    dbHepler.delete(id!);
-    print('---delete 執行結束---');
-  }
-  Future deletewho(id)async{
+  Future<void> delete(id) async{
     dbHepler.delete(id!);
     print('---delete 執行結束---');
   }
