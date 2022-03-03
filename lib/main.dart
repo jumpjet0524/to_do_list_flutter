@@ -31,60 +31,45 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var a = [];
+  List<dynamic> allData = [];
+  // Future<List<Map<String, dynamic>>> table = EventManager.instance.query();
 
   @override
   Widget build(BuildContext context) {
-    Future<List<Map<String, dynamic>>> table = EventManager.instance.query();
-    List<int> items = List<int>.generate(a.length, (int index) => index);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: ListView.builder(
-        itemCount: items.length,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        itemBuilder: (BuildContext context, int index) {
-          return Dismissible(
-            background: Container(
-              color: Colors.green,
-            ),
-            key: UniqueKey(),
-            onDismissed: (direction) {
-              EventManager.instance.delete(a[index]['id']).then((val) {
-                setState(() {
-                  table.then((value) {
-                    setState(() {
-                      a = value;
-                      print(a);
-                    });
-                  });
-                });
-              });
-            },
-            child: ListTile(title: Text('${a[index]['name']}')),
-          );
-        },
-      ),
-      drawer: Drawer(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FloatingActionButton(
-              child: Text('查詢'),
-              onPressed: () {
-                table.then((value) {
-                  setState(() {
-                    a = value;
-                    print(a);
-                  });
-                });
-              },
-            ),
-          ],
-        ),
-      ),
+      body: FutureBuilder<List<dynamic>>(
+          future: EventManager.instance.query(),
+          builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+            if (snapshot.hasData) {
+              allData = snapshot.data as List<dynamic> ;
+              return ListView.builder(
+                itemCount: allData.length,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                itemBuilder: (BuildContext context, int index) {
+                  return Dismissible(
+                    background: Container(
+                      color: Colors.green,
+                    ),
+                    key: UniqueKey(),
+                    onDismissed: (direction) {
+                      EventManager.instance.delete(allData[index]['id']).then((val) {
+                        print(allData);
+                        setState(() {});
+                      });
+                    },
+                    child: ListTile(title: Text('${allData[index]['id']}')),
+                  );
+                },
+              );
+            } else {
+              print('Awaiting result...');
+              return Container();
+            }
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog<String>(
@@ -96,11 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 TextButton(
                   onPressed: () {
                     EventManager.instance.insert().then((value) {
-                      table.then((value) {
-                        setState(() {
-                          a = value;
-                        });
-                      });
+                      setState(() {});
                     });
 
                     Navigator.pop(context, 'OK');

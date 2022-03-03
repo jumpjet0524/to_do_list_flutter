@@ -5,10 +5,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
-  static final _databaseName = "database.db";
-  static final _databaseVersion = 1;
+  static const _databaseName = "database.db";
+  static const _databaseVersion = 1;
 
-  static final table = "mytable";
+  static const table = "myTable";
 
   DatabaseHelper._privateConstructor();
 

@@ -2,7 +2,7 @@ import 'event.dart';
 import 'database_helper.dart';
 
 class EventManager {
-  final dbHepler = DatabaseHelper.instance;
+  final dbHelper = DatabaseHelper.instance;
 
   EventManager._privateConstructor();
 
@@ -13,17 +13,17 @@ class EventManager {
       name: '打神魔',
       event: '日常任務',
     );
-    dbHepler.insert(event.toMap());
+    dbHelper.insert(event.toMap());
     print('------insert執行結束------');
   }
 
   Future<List<Map<String, dynamic>>> query()async{
-    final rows = await dbHepler.queryAllRow();
+    final rows = await dbHelper.queryAllRow();
     return rows;
   }
 
   Future<void> delete(id) async{
-    dbHepler.delete(id!);
+    dbHelper.delete(id!);
     print('---delete 執行結束---');
   }
 }
