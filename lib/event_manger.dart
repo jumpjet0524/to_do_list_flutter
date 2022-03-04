@@ -8,9 +8,9 @@ class EventManager {
 
   static final EventManager instance = EventManager._privateConstructor();
 
-  Future<void>  insert() async {
+  Future<void>  insert(newEvent) async {
     var event = Event(
-      name: '打神魔',
+      name: newEvent,
       event: '日常任務',
     );
     dbHelper.insert(event.toMap());

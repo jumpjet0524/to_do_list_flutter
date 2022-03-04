@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'event_manger.dart';
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'To Do List'),
     );
   }
 }
@@ -32,6 +34,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<dynamic> allData = [];
+  late String newEvent;
   // Future<List<Map<String, dynamic>>> table = EventManager.instance.query();
 
   @override
@@ -57,11 +60,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     key: UniqueKey(),
                     onDismissed: (direction) {
                       EventManager.instance.delete(allData[index]['id']).then((val) {
-                        print(allData);
                         setState(() {});
                       });
                     },
-                    child: ListTile(title: Text('${allData[index]['id']}')),
+                    child: ListTile(title: Text('${allData[index]['name']}')),
                   );
                 },
               );
@@ -75,15 +77,22 @@ class _MyHomePageState extends State<MyHomePage> {
           showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
-              title: const Text('AlertDialog Title'),
-              content: const Text('AlertDialog description'),
+              title: const Text('NEW'),
+              content: TextField(
+                onChanged: (value) {
+                  newEvent = value;
+                },
+                decoration: const InputDecoration(hintText: "insert new event"),
+              ),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
-                    EventManager.instance.insert().then((value) {
-                      setState(() {});
-                    });
+                    if(newEvent.isNotEmpty){
+                      EventManager.instance.insert(newEvent).then((value) {
 
+                        setState(() {});
+                      });
+                    }
                     Navigator.pop(context, 'OK');
                   },
                   child: const Text('OK'),
